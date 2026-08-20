@@ -231,7 +231,7 @@ iot-pothole-speed-breaker-detection/
 
 **Onkar Londhe**
 
-GitHub: https://github.com/Onkar0726
+GitHub: https://github.com/Onkar-726
 
 ## 📄 License
 
