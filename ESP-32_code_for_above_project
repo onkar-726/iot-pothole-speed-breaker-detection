@@ -4,11 +4,10 @@
 #include <HTTPClient.h>
 
 // ==== WiFi Credentials ====
-const char* ssid = "Galaxy F55 5G";
-const char* password = "";  // Leave blank for open networks
-
+const char* ssid = "YOUR_WIFI_NAME";
+const char* password = "YOUR_WIFI_PASSWORD";
 // ==== Google Script Web App URL ====
-const char* serverName = "https://script.google.com/macros/s/AKfycbx5trK2EHFAsFtAoWi_KZnAtPITL5NvxP31oEoOKwY5Df9Bv9hYcUsbiwL4wuYT4HAp/exec";
+const char* serverName = "YOUR_GOOGLE_APPS_SCRIPT_URL";
 
 // ==== Pin Definitions ====
 #define TRIG_PIN    5
@@ -74,16 +73,18 @@ void loop() {
   lcd.print("cm  ");
 
   String status = "Normal Road";
-
-  if (distance < 10) {
+if (distance <= 8) {
     status = "Speed Breaker";
     digitalWrite(BUZZER_PIN, HIGH);
-  } else if (distance > 8) {
+}
+else if (distance >= 12) {
     status = "Pothole Ahead";
     digitalWrite(BUZZER_PIN, HIGH);
-  } else {
+}
+else {
+    status = "Normal Road";
     digitalWrite(BUZZER_PIN, LOW);
-  }
+}
 
   // Display status
   lcd.setCursor(0, 1);
