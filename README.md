@@ -1,17 +1,19 @@
 # 🚧 IoT Pothole & Speed Breaker Detection System
 
-An IoT-based road monitoring system that detects potential **potholes and speed breakers** using an ultrasonic sensor. The system provides real-time alerts through an LCD and buzzer and sends detection data to **Google Sheets using Wi-Fi** for logging and monitoring.
+An IoT-based road condition monitoring system that uses an **ESP32** and an **ultrasonic sensor** to detect potential potholes and speed breakers. The system provides real-time alerts using an LCD and buzzer and logs detection data to **Google Sheets via Wi-Fi**.
+
+> 🎓 This project was developed as a college IoT subject project and focuses on integrating embedded hardware, sensors, Wi-Fi communication, and cloud-based data logging.
 
 ## 📌 Project Overview
 
-Poor road conditions such as potholes and speed breakers can cause accidents and vehicle damage. This project uses an **ESP32** and an **ultrasonic sensor** to measure the distance between the sensor and the road surface.
+Poor road conditions such as potholes and speed breakers can contribute to vehicle damage and accidents. This project measures the distance between an ultrasonic sensor and the road surface to identify significant changes in road height.
 
-Based on the measured distance, the system classifies the road condition and:
+Based on the measured distance, the ESP32 processes the road condition and:
 
-* Displays the distance on a 16×2 LCD
-* Detects potholes and speed breakers
-* Activates a buzzer as an alert
-* Connects to Wi-Fi
+* Displays the measured distance on a 16×2 LCD
+* Detects potential potholes and speed breakers
+* Activates a buzzer for alerts
+* Connects to a Wi-Fi network
 * Sends distance and road status data to Google Sheets
 
 ## ✨ Features
@@ -19,11 +21,11 @@ Based on the measured distance, the system classifies the road condition and:
 * 📏 Real-time distance measurement
 * 🕳️ Pothole detection
 * 🚧 Speed breaker detection
-* 🔊 Buzzer warning system
-* 📟 16×2 I2C LCD display
+* 🔊 Buzzer-based alerts
+* 📟 16×2 I2C LCD output
 * 📶 Wi-Fi connectivity using ESP32
-* ☁️ Cloud logging using Google Sheets
-* 📊 Stores distance and detection status for monitoring
+* ☁️ Google Sheets cloud logging
+* 📊 Stores distance and road status data for monitoring
 
 ## 🛠️ Components Used
 
@@ -49,10 +51,10 @@ Based on the measured distance, the system classifies the road condition and:
 
 ### Buzzer
 
-| Buzzer   | ESP32 Pin |
-| -------- | --------: |
-| Positive |   GPIO 19 |
-| Negative |       GND |
+| Buzzer Pin | ESP32 Pin |
+| ---------- | --------: |
+| Positive   |   GPIO 19 |
+| Negative   |       GND |
 
 ### I2C LCD
 
@@ -65,9 +67,7 @@ Based on the measured distance, the system classifies the road condition and:
 
 ## ⚙️ Working Principle
 
-The ultrasonic sensor continuously measures the distance between the sensor and the road surface.
-
-The ESP32 processes this distance and determines the road condition based on predefined thresholds.
+The ultrasonic sensor continuously measures the distance between the sensor and the road surface. The ESP32 processes this measurement and classifies the road condition according to predefined distance thresholds.
 
 ```text
 Ultrasonic Sensor
@@ -85,24 +85,26 @@ Distance Measurement
 
 ### Detection Logic
 
-* **Distance < 10 cm** → `Speed Breaker`
-* **Distance > 8 cm** → `Pothole Ahead`
-* Otherwise → `Normal Road`
+The road condition is determined by comparing the measured distance with configured thresholds:
 
-When a pothole or speed breaker is detected, the buzzer is activated and the result is displayed on the LCD.
+* A significantly **smaller distance** may indicate a raised surface or `Speed Breaker`.
+* A significantly **larger distance** may indicate a depression or `Pothole Ahead`.
+* Distances within the normal calibrated range are classified as `Normal Road`.
 
-> **Note:** The distance thresholds can be calibrated according to the height and mounting position of the sensor.
+> **Note:** Detection thresholds depend on the sensor's mounting height and physical setup. They should be calibrated using real measurements before deployment.
 
-## 📟 LCD Output
+When a potential pothole or speed breaker is detected, the system activates the buzzer and displays the road status on the LCD.
 
-Example output:
+## 📟 Example LCD Output
+
+### Pothole Detection
 
 ```text
 Distance:12.5cm
 Pothole Ahead
 ```
 
-Or:
+### Speed Breaker Detection
 
 ```text
 Distance:7.5cm
@@ -111,22 +113,22 @@ Speed Breaker
 
 ## ☁️ Google Sheets Integration
 
-The ESP32 connects to Wi-Fi and sends the following data to a Google Apps Script Web App:
+The ESP32 connects to Wi-Fi and sends the following information to a Google Apps Script Web App:
 
 * Distance
 * Road Status
 
-Example request:
+Example request format:
 
 ```text
 ?distance=12.50&status=Pothole%20Ahead
 ```
 
-The Google Apps Script receives this information and stores it in Google Sheets for future monitoring and analysis.
+The Google Apps Script receives the data and stores it in Google Sheets for monitoring and future analysis.
 
 ## 💻 Software and Libraries
 
-The project is developed using Arduino IDE with the following libraries:
+The project is developed using **Arduino IDE** with the following libraries:
 
 ```cpp
 #include <Wire.h>
@@ -147,37 +149,41 @@ The project is developed using Arduino IDE with the following libraries:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Onkar0726/IOT_Pothole_breaker_detection.git
+git clone https://github.com/Onkar0726/iot-pothole-speed-breaker-detection.git
 ```
 
 ### 2. Open the Project
 
-Open the Arduino source code in **Arduino IDE**.
+Navigate to the `src` folder and open the Arduino source code in **Arduino IDE**.
 
 ### 3. Install Required Libraries
 
-Install the required libraries from the Arduino Library Manager.
+Install the required libraries using the Arduino Library Manager.
 
 ### 4. Configure Wi-Fi
 
-Update your Wi-Fi credentials:
+Update the Wi-Fi credentials in the source code:
 
 ```cpp
 const char* ssid = "YOUR_WIFI_NAME";
 const char* password = "YOUR_WIFI_PASSWORD";
 ```
 
-### 5. Configure Google Apps Script URL
+### 5. Configure Google Apps Script
 
-Replace the Web App URL if required:
+Add your Google Apps Script Web App URL:
 
 ```cpp
 const char* serverName = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
 ```
 
-### 6. Select ESP32 Board
+### 6. Connect the Hardware
 
-In Arduino IDE:
+Connect the ultrasonic sensor, LCD, and buzzer according to the pin connections listed above.
+
+### 7. Select the ESP32 Board
+
+In Arduino IDE, select:
 
 ```text
 Tools → Board → ESP32 Dev Module
@@ -188,24 +194,33 @@ Select the correct COM port and upload the code.
 ## 📂 Project Structure
 
 ```text
-IOT_Pothole_breaker_detection/
+iot-pothole-speed-breaker-detection/
 │
-├── Pothole_detection.ino
-├── README.md
-└── images/
-    ├── circuit-diagram.jpg
-    └── project-demo.jpg
+├── src/
+│   └── pothole_speed_breaker_detection.ino
+│
+├── images/
+│   ├── hardware-setup.jpg
+│   ├── lcd-output.jpg
+│   └── google-sheets-output.png
+│
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
+
+> The exact filenames in the `images` folder may differ depending on the files included in the repository.
 
 ## 🔮 Future Improvements
 
-* Add GPS module to record pothole location
-* Display detected potholes on Google Maps
-* Add severity levels for potholes
-* Store timestamp automatically
+* Add a GPS module to record pothole locations
+* Display detected road issues on a map
+* Add severity levels based on pothole depth
+* Include timestamps with every detection
 * Create a web dashboard for monitoring
-* Use multiple sensors for better accuracy
-* Add machine learning or computer vision for advanced road detection
+* Use multiple sensors for improved accuracy
+* Reduce false detections through filtering and calibration
+* Explore computer vision or machine learning for advanced road analysis
 
 ## 👨‍💻 Author
 
@@ -215,7 +230,7 @@ GitHub: https://github.com/Onkar0726
 
 ## 📄 License
 
-This project is created for educational and learning purposes.
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
 ---
 
