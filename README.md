@@ -1,31 +1,32 @@
 # 🚧 IoT Pothole & Speed Breaker Detection System
 
-An IoT-based road condition monitoring system that uses an **ESP32** and an **ultrasonic sensor** to detect potential potholes and speed breakers. The system provides real-time alerts using an LCD and buzzer and logs detection data to **Google Sheets via Wi-Fi**.
+An IoT-based road condition monitoring system built using an **ESP32** and an **ultrasonic sensor** to detect potential potholes and speed breakers. The system provides real-time alerts through an LCD and buzzer and logs detection data to **Google Sheets via Wi-Fi**.
 
-> 🎓 This project was developed as a college IoT subject project and focuses on integrating embedded hardware, sensors, Wi-Fi communication, and cloud-based data logging.
+> 🎓 This project was developed as my first college IoT project, focusing on the integration of embedded hardware, sensors, Wi-Fi communication, and cloud-based data logging.
 
 ## 📌 Project Overview
 
-Poor road conditions such as potholes and speed breakers can contribute to vehicle damage and accidents. This project measures the distance between an ultrasonic sensor and the road surface to identify significant changes in road height.
+Poor road conditions such as potholes and speed breakers can cause vehicle damage and contribute to accidents. This project uses an ultrasonic sensor to continuously measure the distance between the sensor and the road surface.
 
-Based on the measured distance, the ESP32 processes the road condition and:
+The ESP32 processes the measured distance to identify significant changes in road height and performs the following actions:
 
-* Displays the measured distance on a 16×2 LCD
-* Detects potential potholes and speed breakers
-* Activates a buzzer for alerts
-* Connects to a Wi-Fi network
-* Sends distance and road status data to Google Sheets
+* 📏 Displays the measured distance on a 16×2 LCD
+* 🕳️ Detects potential potholes
+* 🚧 Detects potential speed breakers
+* 🔊 Activates a buzzer when an abnormal road condition is detected
+* 📶 Connects to Wi-Fi
+* ☁️ Sends distance and road status data to Google Sheets
 
 ## ✨ Features
 
-* 📏 Real-time distance measurement
-* 🕳️ Pothole detection
-* 🚧 Speed breaker detection
-* 🔊 Buzzer-based alerts
-* 📟 16×2 I2C LCD output
-* 📶 Wi-Fi connectivity using ESP32
-* ☁️ Google Sheets cloud logging
-* 📊 Stores distance and road status data for monitoring
+* Real-time distance measurement
+* Pothole detection
+* Speed breaker detection
+* Buzzer-based alerts
+* 16×2 I2C LCD output
+* Wi-Fi connectivity using ESP32
+* HTTP communication with Google Apps Script
+* Google Sheets data logging
 
 ## 🛠️ Components Used
 
@@ -67,7 +68,9 @@ Based on the measured distance, the ESP32 processes the road condition and:
 
 ## ⚙️ Working Principle
 
-The ultrasonic sensor continuously measures the distance between the sensor and the road surface. The ESP32 processes this measurement and classifies the road condition according to predefined distance thresholds.
+The ultrasonic sensor continuously measures the distance between the sensor and the road surface.
+
+The ESP32 processes this measurement and compares it with predefined distance thresholds. Based on the measured distance, the system identifies changes in the road surface and classifies them as a potential pothole, speed breaker, or normal road condition.
 
 ```text
 Ultrasonic Sensor
@@ -75,48 +78,42 @@ Ultrasonic Sensor
 Distance Measurement
         ↓
       ESP32
-     ↙  ↓  ↘
-   LCD Buzzer Wi-Fi
-                ↓
-         Google Apps Script
-                ↓
-           Google Sheets
+     ↙   ↓   ↘
+   LCD  Buzzer  Wi-Fi
+                   ↓
+          Google Apps Script
+                   ↓
+             Google Sheets
 ```
 
-### Detection Logic
+When an abnormal road condition is detected, the buzzer is activated, the status is displayed on the LCD, and the data is sent to Google Sheets.
 
-The road condition is determined by comparing the measured distance with configured thresholds:
+> **Note:** Detection thresholds depend on the sensor mounting height and physical setup. They should be calibrated using real-world measurements for improved accuracy.
 
-* A significantly **smaller distance** may indicate a raised surface or `Speed Breaker`.
-* A significantly **larger distance** may indicate a depression or `Pothole Ahead`.
-* Distances within the normal calibrated range are classified as `Normal Road`.
-
-> **Note:** Detection thresholds depend on the sensor's mounting height and physical setup. They should be calibrated using real measurements before deployment.
-
-When a potential pothole or speed breaker is detected, the system activates the buzzer and displays the road status on the LCD.
-
-## 📟 Example LCD Output
+## 📟 Example Output
 
 ### Pothole Detection
 
 ```text
-Distance:12.5cm
+Distance: 12.5cm
 Pothole Ahead
 ```
 
 ### Speed Breaker Detection
 
 ```text
-Distance:7.5cm
+Distance: 7.5cm
 Speed Breaker
 ```
 
 ## ☁️ Google Sheets Integration
 
-The ESP32 connects to Wi-Fi and sends the following information to a Google Apps Script Web App:
+The ESP32 sends data to a Google Apps Script Web App using HTTP GET requests.
+
+The following data is logged:
 
 * Distance
-* Road Status
+* Road status
 
 Example request format:
 
@@ -124,11 +121,20 @@ Example request format:
 ?distance=12.50&status=Pothole%20Ahead
 ```
 
-The Google Apps Script receives the data and stores it in Google Sheets for monitoring and future analysis.
+The Google Apps Script receives the data and stores it in Google Sheets for monitoring and analysis.
 
-## 💻 Software and Libraries
+## 💻 Technologies Used
 
-The project is developed using **Arduino IDE** with the following libraries:
+* **ESP32**
+* **Arduino IDE**
+* **Embedded C++**
+* **I2C Communication**
+* **Wi-Fi**
+* **HTTPClient**
+* **Google Apps Script**
+* **Google Sheets**
+
+## 📚 Required Libraries
 
 ```cpp
 #include <Wire.h>
@@ -137,14 +143,7 @@ The project is developed using **Arduino IDE** with the following libraries:
 #include <HTTPClient.h>
 ```
 
-### Required Libraries
-
-* Wire
-* LiquidCrystal_I2C
-* WiFi
-* HTTPClient
-
-## 🚀 How to Run
+## 🚀 Getting Started
 
 ### 1. Clone the Repository
 
@@ -154,11 +153,19 @@ git clone https://github.com/Onkar0726/iot-pothole-speed-breaker-detection.git
 
 ### 2. Open the Project
 
-Navigate to the `src` folder and open the Arduino source code in **Arduino IDE**.
+Open the Arduino source code located in the `src` folder using **Arduino IDE**.
 
 ### 3. Install Required Libraries
 
-Install the required libraries using the Arduino Library Manager.
+Install the required libraries using the Arduino Library Manager:
+
+* LiquidCrystal_I2C
+
+The following libraries are included with the ESP32 Arduino framework:
+
+* Wire
+* WiFi
+* HTTPClient
 
 ### 4. Configure Wi-Fi
 
@@ -171,7 +178,7 @@ const char* password = "YOUR_WIFI_PASSWORD";
 
 ### 5. Configure Google Apps Script
 
-Add your Google Apps Script Web App URL:
+Add your deployed Google Apps Script Web App URL:
 
 ```cpp
 const char* serverName = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
@@ -179,7 +186,7 @@ const char* serverName = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
 
 ### 6. Connect the Hardware
 
-Connect the ultrasonic sensor, LCD, and buzzer according to the pin connections listed above.
+Connect the ultrasonic sensor, I2C LCD, and buzzer according to the pin configuration shown above.
 
 ### 7. Select the ESP32 Board
 
@@ -209,18 +216,16 @@ iot-pothole-speed-breaker-detection/
 └── README.md
 ```
 
-> The exact filenames in the `images` folder may differ depending on the files included in the repository.
-
 ## 🔮 Future Improvements
 
-* Add a GPS module to record pothole locations
-* Display detected road issues on a map
-* Add severity levels based on pothole depth
-* Include timestamps with every detection
+* Add GPS to record the location of detected potholes
+* Display road issues on a map
+* Add timestamps to each detection
+* Implement data filtering to reduce false detections
+* Add pothole severity levels
 * Create a web dashboard for monitoring
 * Use multiple sensors for improved accuracy
-* Reduce false detections through filtering and calibration
-* Explore computer vision or machine learning for advanced road analysis
+* Explore computer vision for advanced road condition detection
 
 ## 👨‍💻 Author
 
@@ -230,7 +235,7 @@ GitHub: https://github.com/Onkar0726
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
